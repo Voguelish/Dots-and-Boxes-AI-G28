@@ -1,3 +1,4 @@
+from shutil import move
 from typing import Tuple
 from Bot import Bot
 from GameAction import GameAction
@@ -5,21 +6,23 @@ from GameState import GameState
 import numpy as np
 import threading
 from copy import deepcopy
+import random as rnd
 
 ꝏ = 999
 
 
 class PekoBot(Bot):
     def __init__(self):
-        self.depth_threshold = 4
+        self.depth_threshold = 15
         self.halt_thinking_event = threading.Event()
-        self.   halt_thinking_thread = threading.Timer(5, self.halt_thinking_event.set)
+        self.halt_thinking_thread = threading.Timer(5, self.halt_thinking_event.set)
     #     self.actions = []
 
     def get_action(self, state: GameState) -> GameAction:
         # print("depth threshold:", self.depth_threshold)
         # self.depth_threshold += 1
         print("New Actions")
+        
         return self.minimax(state)
     
     def minimax(self, state: GameState) -> GameAction:
@@ -36,12 +39,14 @@ class PekoBot(Bot):
         # print("action:",act.action_type + "(" + str(act.position[0]) + "," + str(act.position[1]) + ")")
         print(act)
         print(v)
+        
         self.reset_timer()
         return act
 
     def max_value(self, state:GameState, depth, α, β, skip) -> Tuple[int, GameAction]:
+        # print("MAX : ", depth)
         if skip:
-            return self.min_value(state, depth, α, β, False)
+            return self.min_value(state, depth+1, α, β, False)
         
         if self.terminal_test(state) or depth >= self.depth_threshold:
             return self.utility(state, -1), None
@@ -53,7 +58,7 @@ class PekoBot(Bot):
         actions = self.action(state)
         # act = actions[0]
         for action in actions:
-
+            # print(action)
 
             temp = deepcopy(state)
 
@@ -82,6 +87,62 @@ class PekoBot(Bot):
                 act = action
 
             if self.halt_thinking_event.is_set():
+                koorX = 0
+                koorY = 0
+                neutralMove = False
+                mehMove = False
+                goodMove = False
+                moveContainer = []
+                mehMoveContainer = []
+                panjangBoard = len(state.board_status)
+                for i in range(panjangBoard):
+                    for j in range(len(state.board_status[i])):
+
+                        if(abs(state.board_status[i][j])==0):
+                            neutralMove = True
+                            koorX = i
+                            koorY = j
+                            moveContainer.append((i,j))
+                        elif(abs(state.board_status[i][j])==1):
+                            if(not neutralMove):
+                                mehMove = True
+                                koorX = i
+                                koorY = j
+                                mehMoveContainer.append((i,j))
+                        elif(abs(state.board_status[i][j])==2):
+                            if(not neutralMove and not mehMove):
+                                koorX = i
+                                koorY = j
+                        elif(abs(state.board_status[i][j])==3):
+                            goodMove = True
+                            koorX = i
+                            koorY = j
+                            break
+                    if(goodMove):
+                        break
+                if(not goodMove and neutralMove):
+                    randNum = rnd.randrange(len(moveContainer))
+                    tupRand = moveContainer[randNum]
+                    koorX = tupRand[0]
+                    koorY = tupRand[1]
+                
+                if(not goodMove and not neutralMove and mehMove):
+                    randNum = rnd.randrange(len(mehMoveContainer))
+                    tupRand = mehMoveContainer[randNum]
+                    koorX = tupRand[0]
+                    koorY = tupRand[1]
+
+                # print("MAX koordinat: ", koorX,koorY)
+                # print(state.board_status)
+                if(state.row_status[koorX][koorY] == 0):
+                    act = GameAction("row",(koorY,koorX))
+                elif(state.row_status[koorX+1][koorY] == 0):
+                    act = GameAction("row",(koorY,koorX+1))
+                elif(state.col_status[koorY][koorX] == 0):
+                    act = GameAction("col",(koorY,koorX))
+                elif(state.col_status[koorY][koorX+1] == 0):
+                    act = GameAction("col",(koorY,koorX+1))
+
                 return v, act
 
             if v >= β:
@@ -93,8 +154,9 @@ class PekoBot(Bot):
         return v, act
 
     def min_value(self, state:GameState, depth, α, β, skip) -> Tuple[int, GameAction]:
+        # print("MIN : ", depth)
         if skip:
-            return self.max_value(state, depth, α, β, False)
+            return self.max_value(state, depth+1, α, β, False)
 
         if self.terminal_test(state) or depth >= self.depth_threshold:
             # print("depth:", depth)
@@ -107,7 +169,7 @@ class PekoBot(Bot):
         actions = self.action(state)
         # act = actions[0]
         for action in actions:
-
+            # print(action)
 
             temp = deepcopy(state)
 
@@ -132,6 +194,49 @@ class PekoBot(Bot):
                 act = action
 
             if self.halt_thinking_event.is_set():
+                # koorX = 0
+                # koorY = 0
+                # neutralMove = False
+                # goodMove = False
+                # moveContainer = []
+                # panjangBoard = len(state.board_status)
+                # for i in range(panjangBoard):
+                #     for j in range(len(state.board_status[i])):
+                #         if(abs(state.board_status[i][j])<1):
+                #             neutralMove = True
+                #             koorX = i
+                #             koorY = j
+                #             moveContainer.append((i,j))
+                #         elif(abs(state.board_status[i][j])<=2):
+                #             goodMove = True
+                #             koorX = i
+                #             koorY = j
+                #             break
+                #         elif(abs(state.board_status[i][j])<=3):
+                #             if(not neutralMove):
+                #                 koorX = i
+                #                 koorY = j
+                            
+                #     if(goodMove):
+                #         break
+                # if(not goodMove and neutralMove):
+                #     randNum = rnd.randrange(len(moveContainer))
+                #     tupRand = moveContainer[randNum]
+                #     koorX = tupRand[0]
+                #     koorY = tupRand[1]
+
+                
+                # print("MIN koordinat: ", koorX,koorY)
+                # print(state.board_status)
+                
+                # if(state.row_status[koorX][koorY] == 0):
+                #     act = GameAction("row",(koorY,koorX))
+                # elif(state.row_status[koorX+1][koorY] == 0):
+                #     act = GameAction("row",(koorY,koorX+1))
+                # elif(state.col_status[koorY][koorX] == 0):
+                #     act = GameAction("col",(koorY,koorX))
+                # elif(state.col_status[koorY][koorX+1] == 0):
+                #     act = GameAction("col",(koorY,koorX+1))
                 return v, act
 
             if v <= α:
@@ -204,15 +309,16 @@ class PekoBot(Bot):
         block3 = len(np.argwhere(abs(state.board_status) == 3))
         block2 = len(np.argwhere(abs(state.board_status) == 2))
         block1 = len(np.argwhere(abs(state.board_status) == 1))
+
         # predict = -predict if self.depth_threshold else predict
         # print(state.board_status)
         # print("player1_score:", player1_score, "player2_score:", player2_score)
         # print("predict :", predict)
         if block3 > 0:
-            point = -((block3 * 1) + (block2 * 0.25) + (block1 * 0.0625))
+            point = -666
         else:
-            point = (block2 * 0.25) + (block1 * 0.0625)
-        
+            point = (block1 * 0.25) + (block2 * 0.0625)
+
         return (player1_score - player2_score) + point
 
     def predict(self, state: GameState, player):
@@ -256,6 +362,5 @@ class PekoBot(Bot):
         # return 0
     
     def reset_timer(self):
-        self.depth_threshold = 5
         self.halt_thinking_event = threading.Event()
         self.halt_thinking_thread = threading.Timer(5, self.halt_thinking_event.set)
