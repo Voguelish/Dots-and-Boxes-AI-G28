@@ -147,10 +147,10 @@ class PekoBot(Bot):
                     act = GameAction("row",(koorY,koorX+1))
                     possActions.append(act)
                 if(state.col_status[koorY][koorX] == 0):
-                    act = GameAction("col",(koorY,koorX))
+                    act = GameAction("col",(koorX,koorY))
                     possActions.append(act)
                 if(state.col_status[koorY][koorX+1] == 0):
-                    act = GameAction("col",(koorY,koorX+1))
+                    act = GameAction("col",(koorX+1,koorY))
                     possActions.append(act)
 
                 if(len(possActions)>0):
