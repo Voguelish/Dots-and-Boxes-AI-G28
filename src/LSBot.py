@@ -19,24 +19,21 @@ class LSBot(Bot):
 
     def objective(self, state: GameState) -> int:
         total = 0
-        if state.player1_turn: # Negative, the better
-            for i in state.board_status:
-                for j in i:
-                    if j == -3: # Means player 2 can complete it, bad
-                        total -= 10 # same as give to player 2
-                    elif j == -4: # Means you complete it
-                        total += 10 # to incentivize take it rather than put on blank
-                    elif j == -2:
-                        total += 5 # to incentivize take it rather than put on blank
-        else: # Positive, the better
-            for i in state.board_status:
-                for j in i:
-                    if j == 3:
-                        total -= 10 # same as give to player 1
-                    elif j == 4:
-                        total += 10 # to incentivize take it rather than put on blank
-                    elif j == 2:
-                        total += 5 # to incentivize take it rather than put on blank
+        if state.player1_turn:
+            sign = -1 # acting as player 1
+        else:
+            sign = 1 # acting as player 2
+
+        for i in state.board_status:
+            for j in i:
+                nextMoveState = j * sign
+                if nextMoveState == 3: # Move creates possibility for opponent to finish a square by their next turn
+                    total -= 10 # Objective function greatly reduced
+                elif nextMoveState == 4: # Move finishes a square
+                    total += 10 # Objective function greatly increased
+                elif nextMoveState == 2: # Move doesn't create possibility for opponent to finish a square by their next turn
+                    total += 5 # Objective function increased
+
         return total
     
     def adv_board_status_once(self, state:GameState, act: GameAction) -> GameState:
