@@ -10,7 +10,7 @@ class LSBot(Bot):
         rv = mgr.dict()
         timeinst = mp.Process(target=self.thinking, args=(state, rv))
         timeinst.start()
-        timeinst.join(5)
+        timeinst.join(5000)
         if timeinst.is_alive():
             # Timeout, returning best action so far...
             timeinst.terminate()
@@ -24,23 +24,19 @@ class LSBot(Bot):
                 for j in i:
                     if j == -3: # Means player 2 can complete it, bad
                         total -= 10 # same as give to player 2
-                    elif j == 3: # Means you can take it
-                        total += 4 # same as take from player 2
                     elif j == -4: # Means you complete it
                         total += 10 # to incentivize take it rather than put on blank
-                    else:
-                        total -= j
+                    elif j == -2:
+                        total += 5 # to incentivize take it rather than put on blank
         else: # Positive, the better
             for i in state.board_status:
                 for j in i:
                     if j == 3:
                         total -= 10 # same as give to player 1
-                    elif j == -3:
-                        total += 4 # same as take from player 1
                     elif j == 4:
                         total += 10 # to incentivize take it rather than put on blank
-                    else:
-                        total += j
+                    elif j == 2:
+                        total += 5 # to incentivize take it rather than put on blank
         return total
     
     def adv_board_status_once(self, state:GameState, act: GameAction) -> GameState:
@@ -70,7 +66,7 @@ class LSBot(Bot):
         return retGs
 
     def thinking(self, state: GameState, retval: GameAction):
-        bestObj = -37
+        bestObj = -100 # [-10*9 ... 10*9]
         posibGameActions = []
         for y in range(len(state.col_status)):
             for x in range(len(state.col_status[y])):
@@ -89,6 +85,4 @@ class LSBot(Bot):
             if new_obj >= bestObj:
                 retval[0] = act
                 bestObj = new_obj
-            else:
-                return # END PROCESS
         return
