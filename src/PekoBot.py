@@ -101,23 +101,23 @@ class PekoBot(Bot):
 
                         if(abs(state.board_status[i][j])==0):
                             neutralMove = True
-                            koorX = i
-                            koorY = j
-                            moveContainer.append((i,j))
+                            koorX = j
+                            koorY = i
+                            moveContainer.append((j,i))
                         elif(abs(state.board_status[i][j])==1):
                             if(not neutralMove):
                                 mehMove = True
-                                koorX = i
-                                koorY = j
-                                mehMoveContainer.append((i,j))
+                                koorX = j
+                                koorY = i
+                                mehMoveContainer.append((j,i))
                         elif(abs(state.board_status[i][j])==2):
                             if(not neutralMove and not mehMove):
-                                koorX = i
-                                koorY = j
+                                koorX = j
+                                koorY = i
                         elif(abs(state.board_status[i][j])==3):
                             goodMove = True
-                            koorX = i
-                            koorY = j
+                            koorX = j
+                            koorY = i
                             break
                     if(goodMove):
                         break
@@ -140,11 +140,11 @@ class PekoBot(Bot):
                 print("COL")
                 print(state.col_status)
                 possActions = []
-                if(state.row_status[koorX][koorY] == 0):
-                    act = GameAction("row",(koorY,koorX))
+                if(state.row_status[koorY][koorX] == 0):
+                    act = GameAction("row",(koorX,koorY))
                     possActions.append(act)
-                if(state.row_status[koorX+1][koorY] == 0):
-                    act = GameAction("row",(koorY,koorX+1))
+                if(state.row_status[koorY+1][koorX] == 0):
+                    act = GameAction("row",(koorX,koorY+1))
                     possActions.append(act)
                 if(state.col_status[koorY][koorX] == 0):
                     act = GameAction("col",(koorX,koorY))
@@ -288,10 +288,7 @@ class PekoBot(Bot):
         x, y = action.position[0], action.position[1]
         val = 1
         [mat_ny, mat_nx] = state.board_status.shape
-        # print("before")
-        # print(state.board_status)
-        # print(state.row_status)
-        # print(state.col_status)
+
 
         if y < mat_ny and x < mat_nx:
             state.board_status[y][x] = (abs(state.board_status[y][x]) + val) * player
@@ -330,7 +327,7 @@ class PekoBot(Bot):
         # print("player1_score:", player1_score, "player2_score:", player2_score)
         # print("predict :", predict)
         if block3 > 0:
-            point = -666
+            point = -1
         else:
             point = (block1 * 0.25) + (block2 * 0.0625)
 
