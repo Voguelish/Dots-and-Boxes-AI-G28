@@ -315,5 +315,5 @@ if __name__ == "__main__":
     PvB mode: game_instance = Dots_and_Boxes(None, BotName()) or game_instance = Dots_and_Boxes(BotName(), None)
     BvB mode: game_instance = Dots_and_Boxes(BotName(), BotName())
     """
-    game_instance = Dots_and_Boxes(RandomBot(), LSBot())
+    game_instance = Dots_and_Boxes(LSBot(), PekoBot())
     game_instance.mainloop()

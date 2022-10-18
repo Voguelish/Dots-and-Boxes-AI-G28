@@ -1,4 +1,5 @@
 from shutil import move
+from telnetlib import STATUS
 from typing import Tuple
 from Bot import Bot
 from GameAction import GameAction
@@ -13,7 +14,7 @@ import random as rnd
 
 class PekoBot(Bot):
     def __init__(self):
-        self.depth_threshold = 15
+        self.depth_threshold = 7
         self.halt_thinking_event = threading.Event()
         self.halt_thinking_thread = threading.Timer(5, self.halt_thinking_event.set)
     #     self.actions = []
@@ -132,16 +133,30 @@ class PekoBot(Bot):
                     koorX = tupRand[0]
                     koorY = tupRand[1]
 
-                # print("MAX koordinat: ", koorX,koorY)
-                # print(state.board_status)
+                print("MAX koordinat: ", koorY,koorX)
+                print(state.board_status)
+                print("ROW")
+                print(state.row_status)
+                print("COL")
+                print(state.col_status)
+                possActions = []
                 if(state.row_status[koorX][koorY] == 0):
                     act = GameAction("row",(koorY,koorX))
-                elif(state.row_status[koorX+1][koorY] == 0):
+                    possActions.append(act)
+                if(state.row_status[koorX+1][koorY] == 0):
                     act = GameAction("row",(koorY,koorX+1))
-                elif(state.col_status[koorY][koorX] == 0):
+                    possActions.append(act)
+                if(state.col_status[koorY][koorX] == 0):
                     act = GameAction("col",(koorY,koorX))
-                elif(state.col_status[koorY][koorX+1] == 0):
+                    possActions.append(act)
+                if(state.col_status[koorY][koorX+1] == 0):
                     act = GameAction("col",(koorY,koorX+1))
+                    possActions.append(act)
+
+                if(len(possActions)>0):
+                    randNum = rnd.randrange(len(possActions))
+                    print(randNum)
+                    act = possActions[randNum]
 
                 return v, act
 
