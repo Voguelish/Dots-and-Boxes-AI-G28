@@ -20,6 +20,7 @@ class PekoBotMinimax(Bot):
     def get_action(self, state: GameState) -> GameAction:
         if np.all(state.board_status == 0) or (len(np.argwhere(abs(state.board_status) == 1)) == 1):
             self.depth_threshold = 5
+        self.depth_threshold += 0.4
         return self.minimax(state)
     
     def minimax(self, state: GameState) -> GameAction:
@@ -162,7 +163,7 @@ class PekoBotMinimax(Bot):
 
         if block2 + block3 > 5:
             if self.chain(state):
-                return player1_score - player2_score - 4
+                return player1_score - player2_score - 5
 
         return player1_score - player2_score
 
