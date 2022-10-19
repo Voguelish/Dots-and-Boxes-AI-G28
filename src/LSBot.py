@@ -82,6 +82,4 @@ class LSBot(Bot):
             if new_obj >= bestObj:
                 retval[0] = act
                 bestObj = new_obj
-            else:
-                return
         return
