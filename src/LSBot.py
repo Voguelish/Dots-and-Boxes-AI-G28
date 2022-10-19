@@ -10,7 +10,7 @@ class LSBot(Bot):
         rv = mgr.dict()
         timeinst = mp.Process(target=self.thinking, args=(state, rv))
         timeinst.start()
-        timeinst.join(5000)
+        timeinst.join(5)
         if timeinst.is_alive():
             # Timeout, returning best action so far...
             timeinst.terminate()
@@ -82,4 +82,6 @@ class LSBot(Bot):
             if new_obj >= bestObj:
                 retval[0] = act
                 bestObj = new_obj
+            else:
+                return
         return
