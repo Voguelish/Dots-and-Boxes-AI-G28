@@ -4,7 +4,7 @@ from GameState import GameState
 import multiprocessing as mp
 from copy import deepcopy
 import numpy as np
-class LSBot(Bot):
+class PekoBotLocalSearch(Bot):
     def get_action(self, state: GameState) -> GameAction:
         mgr = mp.Manager()
         rv = mgr.dict()

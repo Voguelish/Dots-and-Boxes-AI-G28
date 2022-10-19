@@ -4,15 +4,18 @@
 # Modified by GaIB 19 Assistants
 
 from tkinter import *
-from PekoBot import PekoBot
+
+from PekoBotLocalSearch import PekoBotLocalSearch
+# from PekoBot import PekoBot
 import numpy as np
 from typing import Optional
 from Bot import Bot
 from GameState import GameState
-from LSBot import LSBot
+# from LSBot import LSBot
 
 # * Import your bot
 from RandomBot import RandomBot
+from PekoBotMinimax import PekoBotMinimax
 
 size_of_board = 600
 number_of_dots = 4
@@ -315,5 +318,5 @@ if __name__ == "__main__":
     PvB mode: game_instance = Dots_and_Boxes(None, BotName()) or game_instance = Dots_and_Boxes(BotName(), None)
     BvB mode: game_instance = Dots_and_Boxes(BotName(), BotName())
     """
-    game_instance = Dots_and_Boxes(LSBot(), PekoBot())
+    game_instance = Dots_and_Boxes(PekoBotMinimax(), PekoBotLocalSearch())
     game_instance.mainloop()
