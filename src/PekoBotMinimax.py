@@ -5,7 +5,6 @@ from GameState import GameState
 import numpy as np
 import threading
 import random
-import random as rnd
 
 ꝏ = 999999999999
 
@@ -13,7 +12,7 @@ import random as rnd
 class PekoBotMinimax(Bot):
     def __init__(self):
         self.state_action = {}
-        self.depth_threshold = 5
+        self.depth_threshold = 24
         self.halt_thinking_event = threading.Event()
         self.halt_thinking_thread = threading.Timer(5, self.halt_thinking_event.set)
 
