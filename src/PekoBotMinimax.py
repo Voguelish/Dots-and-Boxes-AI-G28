@@ -157,7 +157,10 @@ class PekoBotMinimax(Bot):
         player1_score = len(np.argwhere(state.board_status == -4))
         player2_score = len(np.argwhere(state.board_status == 4))
 
-        if len(np.argwhere(abs(state.board_status) == 3)) + len(np.argwhere(abs(state.board_status) == 2)) > 5:
+        block3 = len(np.argwhere(abs(state.board_status) == 3))
+        block2 = len(np.argwhere(abs(state.board_status) == 2))
+
+        if block2 + block3 > 5:
             if self.chain(state):
                 return player1_score - player2_score - 4
 
